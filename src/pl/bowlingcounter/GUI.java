@@ -1,19 +1,22 @@
 package pl.bowlingcounter;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.Line2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class GUI {
+
+	/**
+	 * A frame that contains Main Game
+	 */
 
 	public void GUIforBowling() {
 		EventQueue.invokeLater(new Runnable() {
@@ -21,71 +24,99 @@ public class GUI {
 				JFrame frame = new MainFrame();
 				frame.setTitle("BowlingCounter");
 				frame.setLocationRelativeTo(null);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				frame.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent we) {
+						new Terminator();
+					}
+				});
+
 				frame.setVisible(true);
 			}
 		});
 	}
 }
 
-class MainFrame extends JFrame {
+class MainFrame extends JFrame implements ActionListener {
 	public MainFrame() {
+
 		Image img = new ImageIcon("images/Ball.png").getImage();
 		setIconImage(img);
-		add(new HeadTitle());
+
+		JButton addPlayerButton = new JButton("Add \n player");
+		addPlayerButton.setBounds(350, 40, 160, 30);
+		add(addPlayerButton);
+		addPlayerButton.addActionListener(this);
+		addPlayerButton.setActionCommand("AddPlayer");
+
+		JButton StartButton = new JButton("Start game");
+		StartButton.setBounds(350, 75, 160, 30);
+		add(StartButton);
+		StartButton.addActionListener(this);
+		StartButton.setActionCommand("StartGame");
+
+		JButton restetGameButton = new JButton("Reset game");
+		restetGameButton.setBounds(350, 110, 160, 30);
+		add(restetGameButton);
+		restetGameButton.addActionListener(this);
+		restetGameButton.setActionCommand("ResetGame");
+
+		JButton exitButton = new JButton("Exit game");
+		exitButton.setBounds(350, 145, 160, 30);
+		add(exitButton);
+		exitButton.addActionListener(this);
+		exitButton.setActionCommand("ExitGame");
+
+		JButton BallButton = new JButton("HIT");
+		BallButton.setBounds(135, 390, 70, 70);
+		add(BallButton);
+		BallButton.addActionListener(this);
+		BallButton.setActionCommand("RandomThrow");
+
+		add(new GUIStaticMainFrame());
+
 		pack();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+
+		if (event.getActionCommand().equals("AddPlayer")) {
+
+		}
+
+		if (event.getActionCommand().equals("StartGame")) {
+
+		}
+
+		if (event.getActionCommand().equals("ResetGame")) {
+
+		}
+
+		if (event.getActionCommand().equals("RandomThrow")) {
+
+			int trow = 0;
+
+			String ObjButtons[] = { "OK" };
+			int PromptResult = JOptionPane.showOptionDialog(null, "You hited " + trow + " pins", "Score",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[0]);
+		}
+
+		if (event.getActionCommand().equals("ExitGame")) {
+			new Terminator();
+		}
+
 	}
 }
 
-/**
- * A component that displays a messages and rectagles in backrownd.
- */
-class HeadTitle extends JComponent {
-	public static final int MESSAGE_X_TXT0 = 10;
-	public static final int MESSAGE_Y_TXT0 = 15;
-	public static final int MESSAGE_X_TXT1 = 410;
-	public static final int MESSAGE_Y_TXT1 = 25;
-
-	private static final int DEFAULT_WIDTH = 900;
-	private static final int DEFAULT_HEIGHT = 600;
-
-	public void paintComponent(Graphics g) {
-
-		Font font = new Font(Font.MONOSPACED, Font.BOLD, 12);
-		g.setFont(font);
-
-		g.drawString("This is pleace to play or simulate bowling.", MESSAGE_X_TXT0, MESSAGE_Y_TXT0);
-
-		g.drawString("PLAYERS:", MESSAGE_X_TXT0 + 520, MESSAGE_Y_TXT0);
-
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.draw(new Line2D.Double(MESSAGE_X_TXT0, MESSAGE_Y_TXT0 + 2, MESSAGE_X_TXT0 + 300, MESSAGE_Y_TXT0 + 2));
-
-		g.drawString("Throw!", MESSAGE_X_TXT0 + 140, MESSAGE_Y_TXT0 + 360);
-
-		g.drawRect(MESSAGE_X_TXT0 + 135, MESSAGE_Y_TXT0 + 345, 50, 20);
-
-		g.drawString("or enter score", MESSAGE_X_TXT0 + 112, MESSAGE_Y_TXT0 + 475);
-
-		g2d.setColor(java.awt.Color.WHITE);
-		g2d.fillRect(MESSAGE_X_TXT0, MESSAGE_Y_TXT0 + 12, MESSAGE_X_TXT0 + 306, MESSAGE_Y_TXT0 + 312);
-
-		g2d.fillRect(MESSAGE_X_TXT0 + 520, MESSAGE_Y_TXT0 + 12, MESSAGE_X_TXT0 + 350, MESSAGE_Y_TXT0 + 250);
-
-		g2d.setPaint(new Color(190, 0, 20));
-		g2d.fillRect(MESSAGE_X_TXT0 + 120, MESSAGE_Y_TXT0 + 370, 80, 80);
-
-		Font fontMenu = new Font(Font.MONOSPACED, Font.BOLD, 20);
-		g.setFont(fontMenu);
-		g.drawString("MENU", MESSAGE_X_TXT1, MESSAGE_Y_TXT1);
-
-		Image ballImage = new ImageIcon("images/Bowling.jpg").getImage();
-
-		g.drawImage(ballImage, 330, 400, 200, 200, null);
-
-	}
-
-	public Dimension getPreferredSize() {
-		return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+class Terminator {
+	public Terminator() {
+		String ObjButtons[] = { "Yes", "No" };
+		int PromptResult = JOptionPane.showOptionDialog(null, "Are you sure you want to exit?", "Exit confirmation",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+		if (PromptResult == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
 	}
 }
